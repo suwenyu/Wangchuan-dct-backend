@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+
+	
+<div class='col-sm-6 col-sm-offset-3' >
+<h1>WenYu's Blog</h1>
+
+<form class="navbar-form navbar-left" role="search" method="GET" action="" value="{{ request.GET.q }}">
+  <div class="ui icon input">
+    <input type="text"  name="q" class="form-control" placeholder="Search">
+    <i class="search icon"></i>
+  </div>
+  <!-- <button type="submit" class="ui button">Search</button> -->
+</form>
+
+
+
+{% for obj in object_list %}
+<div class="row">
+  <div class="col-sm-12">
+    <div class="thumbnail">
+      {% if obj.image %}
+      <!-- <img src="{{ obj.image.url }}" class='img-responsive'> -->
+      {% endif %}
+      <div class="caption">
+        {% if obj.draft %}<h3> Draft</h3>{% endif %}
+        {% if obj.publish > today %} <h5>Future Post</h5>{% endif %}
+        <h3><a href='{{ obj.get_absolute_url }}'>{{ obj.title }}</a> <small>{{ obj.publish }} </small></h3>
+        {% if obj.user.get_full_name %}<p>Author: {{ obj.user.get_full_name }}</p>{% endif %}
+        <p>{{ obj.content|linebreaks|truncatechars:100 }}</p>
+        <p><a href="{{ obj.get_absolute_url }}" class="ui basic button" role="button"><i class="icon Unhide"></i>View</a> </p>
+      </div>
+    </div>
+  </div>
+  <hr/>
+  </div>
+ {% endfor %}
+
+<nav>
+  <ul class="pagination">
+    <li>
+      {% if object_list.has_previous %}
+            <a href="?{{ page_request_var }}={{ object_list.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">previous</a>
+      {% endif %}
+    </li>
+    <li>
+      <span class="step-links">
+        <span class="current">
+            Page {{ object_list.number }} of {{ object_list.paginator.num_pages }}.
+        </span>
+      </span>
+    </li>
+    <li>
+      {% if object_list.has_next %}
+            <a href="?{{ page_request_var }}={{ object_list.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">next</a>
+      {% endif %}
+    </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+
+
+{% endblock content%}
